@@ -8,6 +8,7 @@ import 'package:junorno_news/features/mainApp/screens/TagsScreen.dart';
 
 
 import '../../mainApp/screens/ChannelSignup.dart';
+import '../../mainApp/screens/creatorhome.dart';
 import '../Screens/UserProfile.dart';
 import '../Screens/userdownload.dart';
 import '../Screens/userfavorties.dart';
@@ -33,7 +34,7 @@ class UserBottomNavBarWidget extends StatelessWidget {
         if(CurrentChannel==null){
           Get.to(() => Channelsignup());
         }else{
-         Get.to(UserHome());
+         Get.to(HomeScreen());
         }
         break;
       case 3:

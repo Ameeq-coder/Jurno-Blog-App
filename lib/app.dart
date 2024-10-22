@@ -1,37 +1,49 @@
-
-import 'package:device_preview/device_preview.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
-import 'package:junorno_news/features/mainApp/screens/ChannelLogin.dart';
-
-import 'package:junorno_news/features/mainApp/screens/ChannelProfile.dart';
-import 'package:junorno_news/features/authentication/controllers/LoginController.dart';
-import 'package:junorno_news/features/authentication/screens/Front%20Screen/front.dart';
-import 'package:junorno_news/features/authentication/screens/Signup/signup.dart';
-import 'package:junorno_news/features/mainApp/screens/AddTags.dart';
-import 'package:junorno_news/features/mainApp/screens/TagsScreen.dart';
-import 'package:junorno_news/features/mainApp/screens/UpdatePostScreen.dart';
-
-import 'features/mainApp/screens/ChannelSignup.dart';
-import 'features/UserApp/Screens/UserPostContent.dart';
-import 'features/UserApp/Screens/userdownload.dart';
+import 'package:junorno_news/features/onboardingscreens/onboarding.dart';
 import 'features/UserApp/Screens/userhome.dart';
+import 'features/authentication/screens/Front Screen/front.dart';
 import 'features/authentication/screens/Login/login.dart';
-import 'features/mainApp/screens/creatorhome.dart';
-import 'features/mainApp/screens/AddPostScreen.dart';
-import 'features/mainApp/screens/categoryscreen.dart';
-import 'features/onboardingscreens/onboarding.dart';
 
-
-class App extends StatelessWidget {
+class App extends StatefulWidget {
   const App({super.key});
+
+  @override
+  State<App> createState() => _AppState();
+}
+
+class _AppState extends State<App> {
+  final FlutterSecureStorage _secureStorage = const FlutterSecureStorage();
+  Widget? _initialScreen;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkKey();
+  }
+
+  Future<void> _checkKey() async {
+    // Assuming you're checking for a key named "isLoggedIn"
+    String? keyValue = await _secureStorage.read(key: 'user_id');
+    setState(() {
+      if (keyValue != null) {
+        // If the key exists, navigate to the Home/Channel screen
+        _initialScreen = UserHome();  // Replace with your Channel Home screen
+      } else {
+        // If the key does not exist, navigate to the Login screen
+        _initialScreen = OnboardingScreen();  // Replace with your Login screen
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
       themeMode: ThemeMode.system,
-      home: OnboardingScreen(),
+      home: _initialScreen ?? const Scaffold(
+        body: Center(child: CircularProgressIndicator()),  // Loading indicator while checking
+      ),
     );
   }
 }
